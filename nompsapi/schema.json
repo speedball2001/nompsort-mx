@@ -14,6 +14,19 @@
             "type": "integer"
           }
         ]
+      },
+      {
+        "name": "terminateNoMpSort",
+        "description": "Terminates sort prevention for a closing window",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "windowId",
+            "description": "window to be manipulated",
+            "type": "integer"
+          }
+        ]
       }
     ]
   }

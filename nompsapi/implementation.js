@@ -71,6 +71,12 @@ var nompsApi = class extends ExtensionCommon.ExtensionAPI {
           let window = context.extension.windowManager.get(windowId, context).window;
 
           messagePane.attachToWindow(windowId, window);
+        },
+
+        async terminateNoMpSort(windowId) {
+          console.log(`nompsApi.terminateNoMpSort: ${windowId}`);
+
+          messagePane.detachFromWindow(windowId);
         }
       }
     }
