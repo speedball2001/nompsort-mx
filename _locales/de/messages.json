@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "No Message Pane Sort"
+  },
+  "extensionDescription": {
+    "message": "No Message Pane Sort verhindert das unabsichtliche Sortieren der Nachrichtenübersicht indem die Klicks auf die Spaltenköpfe deaktiviert werden. Um die Nachrichten trotzdem zu sortieren, einfach mit Strg+Klick in den Tabellenkopf klicken."
+  }
+}
