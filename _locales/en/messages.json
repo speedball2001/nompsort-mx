@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+  "message": "No Message Pane Sort"
+  },
+  "extensionDescription": {
+    "message": "This extension prevents accidental sorting of your messages by disabling mouse button clicks on the column headers. If you want to temporarily re-sort your messages simply ctrl-click on the appropriate column header in the message pane."
+  }
+}

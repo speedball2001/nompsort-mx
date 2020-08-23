@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "2.0beta1",
+  "author": "Janek Schwarz",
+  "default_locale": "en",
+  "applications": {
+    "gecko": {
+      "id": "nomessagepanesort@janek.org",
+      "strict_min_version": "78.0"
+    }
+  },
+  "permissions": [ "tabs", "activeTab" ],
+  "background": {
+    "page": "background.html"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "browser_style": true
+  },
+ "experiment_apis": {
+    "nompsApi": {
+      "schema": "nompsapi/schema.json",
+      "parent": {
+        "scopes": [ "addon_parent" ],
+        "paths": [[ "nompsApi" ]],
+        "script": "nompsapi/implementation.js"
+      }
+    }
+  }
+}

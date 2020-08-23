@@ -1,0 +1,20 @@
+[
+  {
+    "namespace": "nompsApi",
+    "functions": [
+      {
+        "name": "initNoMpSort",
+        "description": "Intializes sort prevention",
+        "type": "function",
+        "async": true,
+        "parameters": [
+          {
+            "name": "windowId",
+            "description": "window to be manipulated",
+            "type": "integer"
+          }
+        ]
+      }
+    ]
+  }
+]
