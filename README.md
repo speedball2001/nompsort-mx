@@ -17,7 +17,5 @@ Head over to [addons.thunderbird.net][nompsort-mx] to find the current
 version.  Development releases might be available earlier in the
 [Releases] section on GitHub.
 
-Remember to uninstall other BorderColors add-ons if you are using this version!
-
   [nompsort-mx]: https://addons.thunderbird.net/addon/no-message-pane-sort-by-mouse/
   [releases]: https://github.com/speedball2001/nompsort-mx/releases
