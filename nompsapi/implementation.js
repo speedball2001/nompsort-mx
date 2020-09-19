@@ -18,14 +18,16 @@ class MessagePane {
 
   detachFromWindow(windowId) {
     var window = this.attachedWindows[windowId];
-    var messagePaneElement =
-        window.document.getElementById(this.messagePaneId);
 
-    messagePaneElement.removeEventListener('click',
-                                           this.columnClicked,
-                                           true);
+    if(window) {
+      var messagePaneElement =
+          window.document.getElementById(this.messagePaneId);
 
-    delete this.attachedWindows[windowId];
+      messagePaneElement.removeEventListener('click',
+                                             this.columnClicked,
+                                             true);
+      delete this.attachedWindows[windowId];
+    }
   }
 
   detachFromAllWindows() {
