@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "No Message Pane Sort"
+  },
+  "extensionDescription": {
+    "message": "Cette extension empêche le tri accidentel de vos messages en désactivant les clics du bouton de la souris sur les en-têtes de colonne. Si vous souhaitez trier temporairement vos messages, il vous suffit de faire un ctrl-clic sur l'en-tête de colonne approprié dans le volet des messages."
+  }
+}
