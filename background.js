@@ -19,7 +19,7 @@ class NoMpSort {
 
   async initUI(window) {
     if(window.type == "normal") {
-      browser.nompsApi.initNoMpSort(window.id);;
+      browser.nompsApi.initNoMpSort(window.id);
     }
   }
 

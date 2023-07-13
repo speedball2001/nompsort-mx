@@ -1,17 +1,18 @@
 class MessagePane {
-  constructor(messagePaneId) {
-    this.messagePaneId = messagePaneId;
+  constructor() {
     this.attachedWindows = {};
   }
 
   attachToWindow(windowId, window) {
-    var messagePaneElement =
-      window.document.getElementById(this.messagePaneId);
+    let current3Pane = window.gTabmail.tabInfo.find(
+      t => t.mode.name == "mail3PaneTab"
+    ).chromeBrowser.contentWindow;
 
-    const listener = (event) => this.columnClicked;
-    messagePaneElement.addEventListener('click',
-                                        this.columnClicked,
-                                        true);
+    let threadTreeHeader = current3Pane.threadTree.table.header;
+
+    threadTreeHeader.addEventListener('click',
+                                      this.columnClicked,
+                                      true);
 
     this.attachedWindows[windowId] = window;
   }
@@ -20,12 +21,15 @@ class MessagePane {
     var window = this.attachedWindows[windowId];
 
     if(window) {
-      var messagePaneElement =
-          window.document.getElementById(this.messagePaneId);
+      let current3Pane = window.gTabmail.tabInfo.find(
+        t => t.mode.name == "mail3PaneTab"
+      ).chromeBrowser.contentWindow;
 
-      messagePaneElement.removeEventListener('click',
-                                             this.columnClicked,
-                                             true);
+      let threadTreeHeader = current3Pane.threadTree.table.header;
+
+      threadTreeHeader.removeEventListener('click',
+                                           this.columnClicked,
+                                           true);
       delete this.attachedWindows[windowId];
     }
   }
@@ -42,16 +46,16 @@ class MessagePane {
     //
     // Process click event if ctrl-click was used
     var target = event.originalTarget;
-    if(target.localName == "treecol" &&
-       (event.ctrlKey == false &&
-        event.altKey == false &&
-        event.metaKey == false)) {
+
+    if(event.ctrlKey == false &&
+       event.altKey == false &&
+       event.metaKey == false) {
       event.stopPropagation();
     }
   }
 }
 
-const messagePane = new MessagePane("threadPaneBox");
+const messagePane = new MessagePane();
 
 var nompsApi = class extends ExtensionCommon.ExtensionAPI {
   getAPI(context) {
@@ -63,6 +67,7 @@ var nompsApi = class extends ExtensionCommon.ExtensionAPI {
         async initNoMpSort(windowId) {
           let window =
               context.extension.windowManager.get(windowId, context).window;
+
           messagePane.attachToWindow(windowId, window);
         },
 
