@@ -47,6 +47,10 @@ class MessagePane {
     // Process click event if ctrl-click was used
     var target = event.originalTarget;
 
+    if(target.closest(".button-column-picker") != null) {
+      return;
+    }
+
     if(event.ctrlKey == false &&
        event.altKey == false &&
        event.metaKey == false) {
