@@ -8,13 +8,15 @@ class MessagePane {
       t => t.mode.name == "mail3PaneTab"
     ).chromeBrowser.contentWindow;
 
-    let threadTreeHeader = current3Pane.threadTree.table.header;
+    current3Pane.onload = (event) => {
+      let threadTreeHeader = current3Pane.threadTree.table.header;
 
-    threadTreeHeader.addEventListener('click',
-                                      this.columnClicked,
-                                      true);
+      threadTreeHeader.addEventListener('click',
+                                        this.columnClicked,
+                                        true);
 
-    this.attachedWindows[windowId] = window;
+      this.attachedWindows[windowId] = window;
+    }
   }
 
   detachFromWindow(windowId) {
@@ -47,6 +49,7 @@ class MessagePane {
     // Process click event if ctrl-click was used
     var target = event.originalTarget;
 
+    // The column selector should always respond to clicks
     if(target.closest(".button-column-picker") != null) {
       return;
     }
