@@ -1,44 +1,43 @@
 class MessagePane {
   constructor() {
-    this.attachedWindows = {};
+    this.attachedTabs = {};
   }
 
-  attachToWindow(windowId, window) {
-    let current3Pane = window.gTabmail.tabInfo.find(
-      t => t.mode.name == "mail3PaneTab"
-    ).chromeBrowser.contentWindow;
+  async attachToTab(tabId, about3Pane) {
+    if (about3Pane.document.readyState != "complete") {
+      await new Promise(resolve => {
+        about3Pane.addEventListener("load", resolve,{ once: true });
+      })
+    }
+    
+    let threadTreeHeader = about3Pane.threadTree.table.header;
+    threadTreeHeader.addEventListener(
+      'click',
+      this.columnClicked,
+      true
+    );
 
-    current3Pane.onload = (event) => {
-      let threadTreeHeader = current3Pane.threadTree.table.header;
+    this.attachedTabs[tabId] = about3Pane;
+  }
 
-      threadTreeHeader.addEventListener('click',
-                                        this.columnClicked,
-                                        true);
+  detachFromTab(tabId) {
+    var about3Pane = this.attachedTabs[tabId];
 
-      this.attachedWindows[windowId] = window;
+    if (about3Pane) {
+      let threadTreeHeader = about3Pane.threadTree.table.header;
+      threadTreeHeader.removeEventListener(
+        'click',
+        this.columnClicked,
+        true
+      );
+
+      delete this.attachedTabs[tabId];
     }
   }
 
-  detachFromWindow(windowId) {
-    var window = this.attachedWindows[windowId];
-
-    if(window) {
-      let current3Pane = window.gTabmail.tabInfo.find(
-        t => t.mode.name == "mail3PaneTab"
-      ).chromeBrowser.contentWindow;
-
-      let threadTreeHeader = current3Pane.threadTree.table.header;
-
-      threadTreeHeader.removeEventListener('click',
-                                           this.columnClicked,
-                                           true);
-      delete this.attachedWindows[windowId];
-    }
-  }
-
-  detachFromAllWindows() {
-    for(var windowId in this.attachedWindows) {
-      this.detachFromWindow(windowId);
+  detachFromAllTabs() {
+    for (var tabId in this.attachedTabs) {
+      this.detachFromTab(tabId);
     }
   }
 
@@ -50,13 +49,13 @@ class MessagePane {
     var target = event.originalTarget;
 
     // The column selector should always respond to clicks
-    if(target.closest(".button-column-picker") != null) {
+    if (target.closest(".button-column-picker") != null) {
       return;
     }
 
-    if(event.ctrlKey == false &&
-       event.altKey == false &&
-       event.metaKey == false) {
+    if (event.ctrlKey == false &&
+      event.altKey == false &&
+      event.metaKey == false) {
       event.stopPropagation();
     }
   }
@@ -66,26 +65,32 @@ const messagePane = new MessagePane();
 
 var nompsApi = class extends ExtensionCommon.ExtensionAPI {
   getAPI(context) {
-
-    context.callOnClose(this);
+    function getAbout3Pane(tabId) {
+      // Get about:3pane from the tabId.
+      let { nativeTab } = context.extension.tabManager.get(tabId);
+      if (nativeTab instanceof Ci.nsIDOMWindow && nativeTab.document.documentElement.getAttribute("windowtype") == "mail:3pane") {
+        return nativeTab.gTabmail.currentAbout3Pane
+      } else if (nativeTab.mode && nativeTab.mode.name == "mail3PaneTab") {
+        return nativeTab.chromeBrowser.contentWindow
+      }
+      return null;
+    }
 
     return {
       nompsApi: {
-        async initNoMpSort(windowId) {
-          let window =
-              context.extension.windowManager.get(windowId, context).window;
-
-          messagePane.attachToWindow(windowId, window);
+        async initNoMpSort(tabId) {
+          let window = getAbout3Pane(tabId);
+          messagePane.attachToTab(tabId, window);
         },
 
-        async terminateNoMpSort(windowId) {
-          messagePane.detachFromWindow(windowId);
+        async terminateNoMpSort(tabId) {
+          messagePane.detachFromTab(tabId);
         }
       }
     }
   }
 
-  close() {
-    messagePane.detachFromAllWindows();
+  onShutdown() {
+    messagePane.detachFromAllTabs();
   }
 };

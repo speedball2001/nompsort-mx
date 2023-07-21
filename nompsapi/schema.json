@@ -4,13 +4,13 @@
     "functions": [
       {
         "name": "initNoMpSort",
-        "description": "Intializes sort prevention",
+        "description": "Initializes sort prevention",
         "type": "function",
         "async": true,
         "parameters": [
           {
-            "name": "windowId",
-            "description": "window to be manipulated",
+            "name": "tabId",
+            "description": "tab to be manipulated",
             "type": "integer"
           }
         ]
@@ -22,8 +22,8 @@
         "async": true,
         "parameters": [
           {
-            "name": "windowId",
-            "description": "window to be manipulated",
+            "name": "tabId",
+            "description": "tab to be manipulated",
             "type": "integer"
           }
         ]

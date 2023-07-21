@@ -1,56 +1,31 @@
 class NoMpSort {
-  constructor() {
+  constructor() {}
 
+  async run() {
+    // Initialize UI in all open windows.
+    let tabs = await browser.tabs.query({mailTab: true});
+    for (let tab of tabs) {
+      this.initUI(tab);
+    }
+
+    // Listen to new tabs create events to init their UI.
+    browser.tabs.onCreated.addListener((tab) => this.initUI(tab));
+
+    // Listen to tabs close events to terminate nompsort for that tab
+    // (the api does some bookkeeping and we don't want to leak memory).
+    browser.tabs.onRemoved.addListener((tabId) => this.terminateUI(tabId));
   }
 
-  run() {
-    //
-    // initialize UI of all open windows
-    browser.windows.getCurrent().then((window) => this.initUI(window));
-
-    //
-    // listen to new window create events to init their UI
-    browser.windows.onCreated.addListener((window) => this.initUI(window));
-
-    // listen to window close events to terminate nompsort for that window
-    // (the api does some bookkeeping and we don't want to leak memory)
-    browser.windows.onRemoved.addListener((windowId) => this.terminateUI(windowId));
-  }
-
-  async initUI(window) {
-    if(window.type == "normal") {
-      browser.nompsApi.initNoMpSort(window.id);
+  async initUI(tab) {
+    if(tab.mailTab) {
+      browser.nompsApi.initNoMpSort(tab.id);
     }
   }
 
-  async terminateUI(windowId) {
-    browser.nompsApi.terminateNoMpSort(windowId);
+  async terminateUI(tabId) {
+    browser.nompsApi.terminateNoMpSort(tabId);
   }
 }
 
-async function waitForLoad() {
-  let onCreate = new Promise(function(resolve, reject) {
-    function listener() {
-      browser.windows.onCreated.removeListener(listener);
-      resolve(true);
-    }
-    browser.windows.onCreated.addListener(listener);
-  });
-
-  let windows = await browser.windows.getAll({windowTypes:["normal"]});
-  if (windows.length > 0) {
-    return false;
-  } else {
-    return onCreate;
-  }
-}
-
-// self-executing async "main" function
-(async () => {
-  await waitForLoad();
-
-  const nompsort = new NoMpSort();
-
-
-  waitForLoad().then((isAppStartup) => nompsort.run());
-})()
+const nompsort = new NoMpSort();
+nompsort.run();
