@@ -9,7 +9,7 @@
     "gecko": {
       "id": "nomessagepanesort@janek.org",
       "strict_min_version": "115.0",
-      "strict_max_version": "139.*"
+      "strict_max_version": "140.*"
     }
   },
   "permissions": [ "tabs", "activeTab" ],
